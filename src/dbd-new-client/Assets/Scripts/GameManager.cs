@@ -10,10 +10,12 @@
 //
 //-----------------------------------------------------------------------------------------------------------------
 
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using PlayerIOClient;
+using Random = UnityEngine.Random;
 
 public class ChatEntry {
 	public string text = "";
@@ -35,63 +37,69 @@ public class GameManager : MonoBehaviour {
 	private string inputField = "";
 	private Rect window = new Rect(10, 10, 300, 150);
 	private int toadspicked = 0;
+
 	private string infomsg = "";
 
-	void Start() {
-		Application.runInBackground = true;
+	private Client _client;
+	private string _userId;
 
-		// Create a random userid 
-		System.Random random = new System.Random();
-		string userid = "Guest" + random.Next(0, 10000);
-
+	private void Start() 
+	{
 		Debug.Log("Starting");
-
+		
+		Application.runInBackground = true;
+		_userId = $"Guest {Random.Range(0, 10000)}";
 		PlayerIO.Authenticate(
-			"[Enter your game id here]",            //Your game id
-			"public",                               //Your connection id
-			new Dictionary<string, string> {        //Authentication arguments
-				{ "userId", userid },
-			},
-			null,                                   //PlayerInsight segments
-			delegate (Client client) {
-				Debug.Log("Successfully connected to Player.IO");
-				infomsg = "Successfully connected to Player.IO";
+			"dbd-new-qrdesbn2rku1glgjblamhq", "public", 
+			new Dictionary<string, string> {{ "userId", _userId },},
+			null, OnConnectSuccess, OnConnectFailed
+		);
+	}
 
-				target.transform.Find("NameTag").GetComponent<TextMesh>().text = userid;
-				target.transform.name = userid;
+	private void OnConnectSuccess(Client client)
+	{
+		_client = client;
+		Debug.Log("Successfully connected to Player.IO");
+		infomsg = "Successfully connected to Player.IO";
 
-				Debug.Log("Create ServerEndpoint");
-				// Comment out the line below to use the live servers instead of your development server
-				client.Multiplayer.DevelopmentServer = new ServerEndpoint("localhost", 8184);
+		target.transform.Find("NameTag").GetComponent<TextMesh>().text = _userId;
+		target.transform.name = _userId;
 
-				Debug.Log("CreateJoinRoom");
-				//Create or join the room 
-				client.Multiplayer.CreateJoinRoom(
-					"UnityDemoRoom",                    //Room id. If set to null a random roomid is used
-					"UnityMushrooms",                   //The room type started on the server
-					true,                               //Should the room be visible in the lobby?
-					null,
-					null,
-					delegate (Connection connection) {
-						Debug.Log("Joined Room.");
-						infomsg = "Joined Room.";
-						// We successfully joined a room so set up the message handler
-						pioconnection = connection;
-						pioconnection.OnMessage += handlemessage;
-						joinedroom = true;
-					},
-					delegate (PlayerIOError error) {
-						Debug.Log("Error Joining Room: " + error.ToString());
-						infomsg = error.ToString();
-					}
-				);
+		Debug.Log("Create ServerEndpoint");
+		client.Multiplayer.DevelopmentServer = new ServerEndpoint("localhost", 8184);
+
+		Debug.Log("CreateJoinRoom");
+		//Create or join the room 
+		client.Multiplayer.CreateJoinRoom(
+			"UnityDemoRoom",                    //Room id. If set to null a random roomid is used
+			"UnityMushrooms",                   //The room type started on the server
+			true,                               //Should the room be visible in the lobby?
+			null,
+			null,
+			delegate (Connection connection) {
+				Debug.Log("Joined Room.");
+				infomsg = "Joined Room.";
+				// We successfully joined a room so set up the message handler
+				pioconnection = connection;
+				pioconnection.OnMessage += handlemessage;
+				joinedroom = true;
 			},
 			delegate (PlayerIOError error) {
-				Debug.Log("Error connecting: " + error.ToString());
+				Debug.Log("Error Joining Room: " + error.ToString());
 				infomsg = error.ToString();
 			}
 		);
+	}
 
+	private void OnConnectFailed(PlayerIOError error)
+	{
+		Debug.Log("Error connecting: " + error.ToString());
+		infomsg = error.ToString();
+	}
+
+	private void OnDisable()
+	{
+		_client?.Logout();
 	}
 
 	void handlemessage(object sender, Message m) {
@@ -99,7 +107,6 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
-		// process message queue
 		foreach (Message m in msgList) {
 			switch (m.Type) {
 				case "PlayerJoined":
@@ -111,29 +118,18 @@ public class GameManager : MonoBehaviour {
 				case "Move":
 					GameObject upplayer = GameObject.Find(m.GetString(0));
 					upplayer.transform.LookAt(new Vector3(m.GetFloat(1), 0, m.GetFloat(2)));
-					// set transform x axis to 0, so the character will be facing forward
 					upplayer.transform.eulerAngles = new Vector3(0, upplayer.transform.eulerAngles.y, upplayer.transform.eulerAngles.z);
 
-
-					// get distance between current position and target position,
-					// we'll need to value to know how much the tween will last
 					float dist = Vector3.Distance(upplayer.transform.position, new Vector3(m.GetFloat(1), 0, m.GetFloat(2)));
-					// create a tween between current and target position
-					iTween.MoveTo(upplayer, iTween.Hash("x", m.GetFloat(1), "z", m.GetFloat(2), "onstart", "startwalk", "oncomplete", "stopwalk", "time", dist, "delay", 0, "easetype", iTween.EaseType.linear));
+					//iTween.MoveTo(upplayer, iTween.Hash("x", m.GetFloat(1), "z", m.GetFloat(2), "onstart", "startwalk", "oncomplete", "stopwalk", "time", dist, "delay", 0, "easetype", iTween.EaseType.linear));
 					break;
 
 				case "Harvest":
 					GameObject hvplayer = GameObject.Find(m.GetString(0));
 					hvplayer.transform.LookAt(new Vector3(m.GetFloat(1), .5f, m.GetFloat(2)));
-
-					// set transform x axis to 0, so the character will be facing forward
 					hvplayer.transform.eulerAngles = new Vector3(0, hvplayer.transform.eulerAngles.y, hvplayer.transform.eulerAngles.z);
-
-					// get distance between current position and target position,
-					// we'll need to value to know how much the tween will last
 					float distance = Vector3.Distance(hvplayer.transform.position, new Vector3(m.GetFloat(1), 0, m.GetFloat(2)));
-					// create a tween between current and target position
-					iTween.MoveTo(hvplayer, iTween.Hash("x", m.GetFloat(1), "z", m.GetFloat(2), "onstart", "startwalk", "oncomplete", "stopharvest", "time", distance, "delay", 0, "easetype", iTween.EaseType.linear));
+					//iTween.MoveTo(hvplayer, iTween.Hash("x", m.GetFloat(1), "z", m.GetFloat(2), "onstart", "startwalk", "oncomplete", "stopharvest", "time", distance, "delay", 0, "easetype", iTween.EaseType.linear));
 					break;
 				case "Picked":
 					// remove the object when it's picked up
@@ -168,15 +164,11 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
-		// clear message queue after it's been processed
 		msgList.Clear();
 	}
 
-	void OnMouseDown() {
-		// this function responds to mouse clicks on the ground
-		// it will send a move request to the server
-
-		// ignore user input if we're not inside a room
+	void OnMouseDown() 
+	{
 		if (!joinedroom) {
 			return;
 		}
@@ -216,10 +208,6 @@ public class GameManager : MonoBehaviour {
 		}
 
 		GUI.FocusControl("Chat input field");
-
-		// Begin a scroll view. All rects are calculated automatically - 
-		// it will use up any available screen space and make sure contents flow correctly.
-		// This is kept small with the last two parameters to force scrollbars to appear.
 		scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 
 		foreach (ChatEntry entry in entries) {
@@ -239,7 +227,7 @@ public class GameManager : MonoBehaviour {
 		// End the scrollview we began above.
 		GUILayout.EndScrollView();
 
-		if (Event.current.type == EventType.keyDown && Event.current.keyCode == KeyCode.Return && inputField.Length > 0) {
+		if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Return && inputField.Length > 0) {
 
 			GameObject chatplayer = GameObject.Find(target.transform.name);
 			chatplayer.transform.Find("Chat").GetComponent<TextMesh>().text = inputField;

@@ -1,0 +1,13 @@
+D:\JOB\dbd-new\src\dbd-new-server\Serverside Code\Player.IO Test Server Project\bin\Debug\Test Server.exe
+D:\JOB\dbd-new\src\dbd-new-server\Serverside Code\Player.IO Test Server Project\bin\Debug\Test Server.pdb
+D:\JOB\dbd-new\src\dbd-new-server\Serverside Code\Player.IO Test Server Project\bin\Debug\MushroomsUnity3DExample.dll
+D:\JOB\dbd-new\src\dbd-new-server\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO Development Server.exe
+D:\JOB\dbd-new\src\dbd-new-server\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO GameLibrary.dll
+D:\JOB\dbd-new\src\dbd-new-server\Serverside Code\Player.IO Test Server Project\bin\Debug\MushroomsUnity3DExample.pdb
+D:\JOB\dbd-new\src\dbd-new-server\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO GameLibrary.xml
+D:\JOB\dbd-new\src\dbd-new-server\Serverside Code\Player.IO Test Server Project\obj\Debug\Player.IO Test Server.csproj.AssemblyReference.cache
+D:\JOB\dbd-new\src\dbd-new-server\Serverside Code\Player.IO Test Server Project\obj\Debug\Player.IO Test Server.csproj.SuggestedBindingRedirects.cache
+D:\JOB\dbd-new\src\dbd-new-server\Serverside Code\Player.IO Test Server Project\obj\Debug\Player.IO Test Server.csproj.CoreCompileInputs.cache
+D:\JOB\dbd-new\src\dbd-new-server\Serverside Code\Player.IO Test Server Project\obj\Debug\Player.IO Test Server.csproj.CopyComplete
+D:\JOB\dbd-new\src\dbd-new-server\Serverside Code\Player.IO Test Server Project\obj\Debug\Test Server.exe
+D:\JOB\dbd-new\src\dbd-new-server\Serverside Code\Player.IO Test Server Project\obj\Debug\Test Server.pdb

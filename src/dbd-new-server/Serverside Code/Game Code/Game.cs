@@ -163,6 +163,7 @@ namespace MushroomsUnity3DExample {
 					}
 					break;
 				case "Chat":
+					Console.WriteLine("player.ConnectUserId: {0}", message.GetString(0));
 					foreach(Player pl in Players) {
 						if(pl.ConnectUserId != player.ConnectUserId) {
 							pl.Send("Chat", player.ConnectUserId, message.GetString(0));
