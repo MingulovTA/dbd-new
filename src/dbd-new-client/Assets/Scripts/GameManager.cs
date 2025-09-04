@@ -22,7 +22,8 @@ public class ChatEntry {
 	public bool mine = true;
 }
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour 
+{
 
 	public GameObject target;
 	public GameObject PlayerPrefab;

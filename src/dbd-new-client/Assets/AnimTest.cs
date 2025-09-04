@@ -7,6 +7,7 @@ public class AnimTest : MonoBehaviour
     [SerializeField] private Animation _animation;
     [SerializeField] private List<AnimationClip> _clips;
     private int _animIndex;
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
