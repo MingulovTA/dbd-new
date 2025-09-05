@@ -107,8 +107,10 @@ public class GameManager : MonoBehaviour
 		msgList.Add(m);
 	}
 
-	void FixedUpdate() {
-		foreach (Message m in msgList) {
+	void FixedUpdate() 
+	{
+		foreach (Message m in msgList) 
+		{
 			switch (m.Type) {
 				case "PlayerJoined":
 					GameObject newplayer = GameObject.Instantiate(target) as GameObject;

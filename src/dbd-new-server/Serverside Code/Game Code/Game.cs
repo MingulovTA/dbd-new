@@ -44,7 +44,17 @@ namespace MushroomsUnity3DExample
 
 		public override void UserJoined(Player player) 
 		{
-			Broadcast("SvUserJoined",player.ConnectUserId);
+			foreach(Player pl in Players) 
+			{
+				if(pl.ConnectUserId != player.ConnectUserId)
+				{
+					pl.Send("SvUserJoined", player.ConnectUserId, 0, 0, 0);
+					player.Send("SvUserJoined", pl.ConnectUserId, pl.PosX, pl.PosY, pl.PosZ);
+				}
+			}
+			
+			//player.Send("SvUserJoined", player.ConnectUserId, player.PosX, player.PosY, player.PosZ);
+			
 		}
 
 		public override void UserLeft(Player player) 
@@ -61,6 +71,7 @@ namespace MushroomsUnity3DExample
 					player.PosY = message.GetFloat(1);
 					player.PosZ = message.GetFloat(2);
 					Broadcast("SvMove", player.ConnectUserId, player.PosX, player.PosY, player.PosZ);
+					Console.WriteLine($"SvMove {player.ConnectUserId} >> {player.PosX} {player.PosY} {player.PosZ}");
 					break;
 				case "ClKill":
 					var targetId = message.GetString(0);
@@ -92,7 +103,8 @@ namespace MushroomsUnity3DExample
 				case "Chat":
 					Console.WriteLine("player.ConnectUserId: {0}", message.GetString(0));
 					foreach(Player pl in Players) {
-						if(pl.ConnectUserId != player.ConnectUserId) {
+						if(pl.ConnectUserId != player.ConnectUserId) 
+						{
 							pl.Send("Chat", player.ConnectUserId, message.GetString(0));
 						}
 					}

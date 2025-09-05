@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class OtherPlayer : MonoBehaviour
 {
-    [SerializeField] private string _playerId;
+    [SerializeField] private string _userId;
     [SerializeField] private NavMeshAgent _navMeshAgent;
     [SerializeField] private List<Animation> _plModels;
     [SerializeField] private Transform _target;
@@ -13,6 +13,7 @@ public class OtherPlayer : MonoBehaviour
     private int _currentTeamId;
     private Animation _plModel;
     private Vector3 _lastPos;
+    public string UserId => _userId;
 
     private void Awake()
     {
@@ -20,9 +21,9 @@ public class OtherPlayer : MonoBehaviour
         ChangeTeam(0);
     }
 
-    public void Init(string playerId)
+    public void Init(string userId)
     {
-        _playerId = playerId;
+        _userId = userId;
     }
 
     public void Move(Vector3 point)
@@ -47,8 +48,5 @@ public class OtherPlayer : MonoBehaviour
         else
             _plModel.CrossFade("Idle",.25f);
         _lastPos = transform.position;
-        
-        
-        Move(_target.position);
     }
 }

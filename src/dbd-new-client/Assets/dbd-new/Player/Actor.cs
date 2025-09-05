@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections;
 using App.Player;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class Actor : MonoBehaviour
 {
-    [SerializeField] private string _name;
+    [SerializeField] private string _userId;
     [SerializeField] private ActorTeam _team;
 
     [SerializeField] private CharacterController _plChar;
@@ -14,7 +15,7 @@ public class Actor : MonoBehaviour
     [SerializeField] private Transform _transform;
 
     public ActorTeam Team => _team;
-    public string Name => _name;
+    public string UserId => _userId;
     public CharacterController PlChar => _plChar;
 
     public PlMoveSettings PlMoveSettings => _plMoveSettings;
@@ -29,6 +30,12 @@ public class Actor : MonoBehaviour
         Cursor.visible = false;
     }
 
+    public void Init(string userId)
+    {
+        _userId = userId;
+        StartCoroutine(SendingPos());
+    }
+
     private void OnValidate()
     {
         _transform = transform;
@@ -36,4 +43,16 @@ public class Actor : MonoBehaviour
         _plMoveSettings = GetComponent<PlMoveSettings>();
         _plCrouch = GetComponentInChildren<PlCrouch>();
     }
+
+    private IEnumerator SendingPos()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.25f);
+            var p = transform.position;
+            Game.I.PioManager.PioConnection.Send("ClMove", p.x, p.y, p.z);
+        }
+    }
+    
+    
 }

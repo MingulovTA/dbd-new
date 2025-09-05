@@ -6,15 +6,20 @@ using Random = UnityEngine.Random;
 
 public class PioManager
 {
-    private const bool IS_DEVELOPMENT_SERVER = true;
+    private const bool IS_DEVELOPMENT_SERVER = false;
     private const string GAME_ID = "dbd-new-qrdesbn2rku1glgjblamhq";
 
     private Client _client;
     private string _userId;
     private Connection _pioConnection;
-    private List<Message> _msgList = new List<Message>(); //  Messsage queue implementation
     private MsgReciever _msgReciever = new MsgReciever();
     private Action _onConnectedToServer;
+
+    public Connection PioConnection => _pioConnection;
+
+    public Client Client => _client;
+
+    public string UserId => _userId;
 
     public PioManager(MsgReciever msgReciever, Action onConnectedToServer)
     {
@@ -52,6 +57,7 @@ public class PioManager
         Debug.Log("PIO: JoinedRoomSuccess");
         _pioConnection = connection;
         _pioConnection.OnMessage += MsgHandler;
+        _onConnectedToServer?.Invoke();
     }
     
     private void OnConnectFailed(PlayerIOError error)
@@ -66,6 +72,6 @@ public class PioManager
 
     private void MsgHandler(object sender, Message m)
     {
-        _msgList.Add(m);
+        _msgReciever.Recieve(m);
     }
 }
