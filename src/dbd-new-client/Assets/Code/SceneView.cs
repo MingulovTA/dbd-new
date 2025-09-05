@@ -14,6 +14,10 @@ public class SceneView : MonoBehaviour
         Game.I.MsgReciever.SvUserJoined += SvUserJoinedHandler;
         Game.I.MsgReciever.SvUserLeft += SvUserLeftHandler;
         Game.I.MsgReciever.SvMove += SvMoveHandler;
+        Game.I.MsgReciever.SvKill += SvKillHandler;
+        Game.I.MsgReciever.SvRestartGame += SvRestartGameHandler;
+        Game.I.MsgReciever.SvRevive += SvReviveHandler;
+        Game.I.MsgReciever.SvTurnY += SvTurnYHandler;
     }
 
     private void OnDisable()
@@ -22,6 +26,51 @@ public class SceneView : MonoBehaviour
         Game.I.MsgReciever.SvUserJoined -= SvUserJoinedHandler;
         Game.I.MsgReciever.SvUserLeft -= SvUserLeftHandler;
         Game.I.MsgReciever.SvMove -= SvMoveHandler;
+        Game.I.MsgReciever.SvKill -= SvKillHandler;
+        Game.I.MsgReciever.SvRestartGame -= SvRestartGameHandler;
+        Game.I.MsgReciever.SvRevive -= SvReviveHandler;
+        Game.I.MsgReciever.SvTurnY -= SvTurnYHandler;
+    }
+
+    private void SvTurnYHandler(string turnerId, float angleY)
+    {
+        var turner = _players.FirstOrDefault(pl => pl.UserId == turnerId);
+        if (turner != null)
+            turner.Turn(angleY);
+    }
+
+    private void SvReviveHandler(string reviverId)
+    {
+        if (Game.I.PioManager.UserId == reviverId)
+        {
+            _actor.Revive();
+        }
+        else
+        {
+            var reviver = _players.FirstOrDefault(pl => pl.UserId == reviverId);
+            if (reviver != null)
+                reviver.Revive();
+        }
+    }
+
+    private void SvRestartGameHandler()
+    {
+        _actor.Revive();
+        foreach (var otherPlayer in _players)
+            otherPlayer.Revive();
+    }
+
+    private void SvKillHandler(string killerId, string victumId)
+    {
+        if (victumId == Game.I.PioManager.UserId)
+        {
+            _actor.Kill();
+        }
+        var victum = _players.FirstOrDefault(pl => pl.UserId == victumId);
+        if (victum != null)
+            victum.Kill();
+        
+        
     }
 
     private void GameStartHandler()
@@ -29,10 +78,12 @@ public class SceneView : MonoBehaviour
         _actor.Init(Game.I.PioManager.UserId);
     }
 
-    private void SvUserJoinedHandler(string userId)
+    private void SvUserJoinedHandler(string userId, Vector3 pos, int teamId)
     {
         var newPlayer = Instantiate(_otherPlayerPrefab);
+        newPlayer.transform.position = pos;
         newPlayer.Init(userId);
+        newPlayer.ChangeTeam(teamId);
         _players.Add(newPlayer);
     }
 
@@ -48,11 +99,9 @@ public class SceneView : MonoBehaviour
 
     private void SvMoveHandler(string userId, Vector3 newPos)
     {
-        Debug.Log("SvMoveHandler");
         var movedPlayer = _players.FirstOrDefault(pl => pl.UserId == userId);
         if (movedPlayer != null)
         {
-            Debug.Log("MOVE");
             movedPlayer.Move(newPos);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,6 +15,7 @@ public class OtherPlayer : MonoBehaviour
     private Animation _plModel;
     private Vector3 _lastPos;
     public string UserId => _userId;
+    public int CurrentTeamId => _currentTeamId;
 
     private void Awake()
     {
@@ -48,5 +50,28 @@ public class OtherPlayer : MonoBehaviour
         else
             _plModel.CrossFade("Idle",.25f);
         _lastPos = transform.position;
+
+        //_plModel.transform.eulerAngles =
+        //    Vector3.MoveTowards(_plModel.transform.eulerAngles, _targetAngle, Time.deltaTime*100);
+    }
+
+    public void Revive()
+    {
+        ChangeTeam(0);
+    }
+
+    public void Kill()
+    {
+        ChangeTeam(1);
+    }
+
+    private Vector3 _targetAngle;
+    private Tween _rotateTween;
+    public void Turn(float angleY)
+    {
+        _targetAngle.y = angleY;
+        _rotateTween?.Kill();
+        _rotateTween = _plModel.transform.DORotate(new Vector3(0, angleY, 0), .4f, RotateMode.Fast)
+            .SetEase(Ease.InOutSine);
     }
 }
