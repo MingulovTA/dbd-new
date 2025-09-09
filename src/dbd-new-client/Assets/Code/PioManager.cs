@@ -8,6 +8,7 @@ public class PioManager
 {
     private const bool IS_DEVELOPMENT_SERVER = false;
     private const string GAME_ID = "dbd-new-qrdesbn2rku1glgjblamhq";
+    public const string DEFAULT_ROOM_TYPE = "Default";
 
     private Client _client;
     private string _userId;
@@ -15,11 +16,20 @@ public class PioManager
     private MsgReciever _msgReciever = new MsgReciever();
     private Action _onConnectedToServer;
 
+    private bool _isConnected;
+
+    public bool IsConnected => _isConnected;
+
     public Connection PioConnection => _pioConnection;
 
     public Client Client => _client;
 
     public string UserId => _userId;
+
+    public event Action OnSuccessConnected; 
+    public event Action OnJoinRoomSuccess; 
+    public event Action OnJoinRoomFailed; 
+    
 
     public PioManager(MsgReciever msgReciever, Action onConnectedToServer)
     {
@@ -50,6 +60,7 @@ public class PioManager
             null,
             JoinedRoomSuccess, JoinedRoomFailed
         );
+        OnSuccessConnected?.Invoke();
     }
     
     private void JoinedRoomSuccess(Connection connection)
@@ -58,11 +69,13 @@ public class PioManager
         _pioConnection = connection;
         _pioConnection.OnMessage += MsgHandler;
         _onConnectedToServer?.Invoke();
+        OnJoinRoomSuccess?.Invoke();
     }
     
     private void OnConnectFailed(PlayerIOError error)
     {
         Debug.Log("PIO: Error connecting: " + error.ToString());
+        OnJoinRoomFailed?.Invoke();
     }
 
     private void JoinedRoomFailed(PlayerIOError error)
@@ -73,5 +86,14 @@ public class PioManager
     private void MsgHandler(object sender, Message m)
     {
         _msgReciever.Recieve(m);
+    }
+
+    public void JoinRoom(RoomInfo roomInfo)
+    {
+        _client.Multiplayer.CreateJoinRoom("UnityDemoRoom", "UnityMushrooms", true, null,
+            null,
+            JoinedRoomSuccess, JoinedRoomFailed
+        );
+        _client.Multiplayer.JoinRoom(roomInfo.Id,null,JoinedRoomSuccess,JoinedRoomFailed);
     }
 }
