@@ -9,6 +9,8 @@ public class MainMenuSceneView : MonoBehaviour
     private void Awake()
     {
         _loadScreen.SetActive(true);
+        if (Game.I.PioManager.IsConnected)
+            _loadScreen.SetActive(false);
     }
 
     private void OnEnable()
