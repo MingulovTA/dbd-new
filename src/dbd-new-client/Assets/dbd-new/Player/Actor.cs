@@ -71,7 +71,6 @@ public class Actor : MonoBehaviour
     
     private void OnCollisionEnter(Collision collision)
     {
-        
         OtherPlayer op = collision.transform.GetComponent<OtherPlayer>();
         if (op==null) return;
         if (op.UserId != Game.I.PioManager.UserId)
@@ -97,8 +96,12 @@ public class Actor : MonoBehaviour
     {
         TryToAnimView();
         TryToSendSelfPos();
+        TryToSendStartMove();
+        TryToSendStopMove();
         TryToChangeTeam();
         TryToSendAngle();
+        
+        _lastPos = transform.position;
     }
 
     private int _angleY;
@@ -131,7 +134,7 @@ public class Actor : MonoBehaviour
             _plModel.CrossFade("Jog Forward",.25f);
         else
             _plModel.CrossFade("Idle",.25f);
-        _lastPos = transform.position;
+        
     }
 
     private Vector3Int _lastPosInt;
@@ -139,14 +142,36 @@ public class Actor : MonoBehaviour
     private void TryToSendSelfPos()
     {
         if (!_connected) return;
-        _posInt.x = (int)(_transform.position.x * 3);
-        _posInt.y = (int)(_transform.position.y * 3);
-        _posInt.z = (int)(_transform.position.z * 3);
+        _posInt.x = (int)(_transform.position.x);
+        _posInt.y = (int)(_transform.position.y);
+        _posInt.z = (int)(_transform.position.z);
 
         if (_posInt.x != _lastPosInt.x || _posInt.y != _lastPosInt.y || _posInt.z != _lastPosInt.z)
         {
             SendNewPos();
             _lastPosInt = _posInt;
+        }
+    }
+
+    private bool _isMoving;
+    private void TryToSendStartMove()
+    {
+        if (!_isMoving&&Vector3.Distance(transform.position, _lastPos) > 0.001f)
+        {
+            _isMoving = true;
+            Vector3 delta = (transform.position-_lastPos)*1/Time.deltaTime*10;
+            Debug.Log(delta);
+            Vector3 newPos = transform.position + delta;
+            Game.I.PioManager.PioConnection.Send("ClMove", newPos.x, newPos.y, newPos.z);
+        }
+    }
+    
+    private void TryToSendStopMove()
+    {
+        if (_isMoving&&Vector3.Distance(transform.position, _lastPos) <= 0.001f)
+        {
+            _isMoving = false;
+            SendNewPos();
         }
     }
 

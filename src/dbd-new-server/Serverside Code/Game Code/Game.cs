@@ -40,7 +40,7 @@ namespace MushroomsUnity3DExample
 			Console.WriteLine("KillFirst");
 			_gameStateId = GameStateId.Gameplay;
 			Random random = new Random();
-			int randomIndex = random.Next(0, PlayerCount-1);
+			int randomIndex = random.Next(0, PlayerCount);
 			var firstKiller = Players.ToList()[randomIndex];
 			firstKiller.TeamId = 1;
 			Broadcast("SvKill", "Server", firstKiller.ConnectUserId);

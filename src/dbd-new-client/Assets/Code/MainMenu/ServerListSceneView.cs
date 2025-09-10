@@ -16,7 +16,7 @@ public class ServerListSceneView : MonoBehaviour
     {
         _serverLineViewPrefab.gameObject.SetActive(false);
         _btnRefresh.interactable = false;
-        _btnRefresh.onClick.RemoveListener(Refresh);
+        _btnRefresh.onClick.AddListener(Refresh);
         Game.I.PioManager.OnSuccessConnected += Refresh;
         
         if (Game.I.PioManager.IsConnected)
@@ -30,6 +30,11 @@ public class ServerListSceneView : MonoBehaviour
 
     private void Refresh()
     {
+        Debug.Log("Refresh");
+        foreach (var slv in _serverLineViews)
+            Destroy(slv.gameObject);
+        _serverLineViews.Clear();
+        
         _btnRefresh.interactable = false;
         var mp = Game.I.PioManager.Client.Multiplayer;
         string roomType = PioManager.DEFAULT_ROOM_TYPE;
@@ -45,11 +50,6 @@ public class ServerListSceneView : MonoBehaviour
     private void OnRefreshSuccess(RoomInfo[] value)
     {
         _btnRefresh.interactable = true;
-
-        foreach (var slv in _serverLineViews)
-            Destroy(slv.gameObject);
-        _serverLineViews.Clear();
-        
         foreach (var roomInfo in value)
         {
             var slv = Instantiate(_serverLineViewPrefab, _serverLineViewPrefab.transform.parent);
