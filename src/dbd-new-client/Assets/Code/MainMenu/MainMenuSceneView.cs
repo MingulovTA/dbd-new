@@ -6,7 +6,7 @@ public class MainMenuSceneView : MonoBehaviour
 {
     [SerializeField] private GameObject _loadScreen;
 
-    private void Awake()
+    private void Start()
     {
         _loadScreen.SetActive(true);
         if (Game.I.PioManager.IsConnected)

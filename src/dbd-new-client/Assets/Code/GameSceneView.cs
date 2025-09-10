@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class SceneView : MonoBehaviour
+public class GameSceneView : MonoBehaviour
 {
     [SerializeField] private Actor _actor;
     [SerializeField] private OtherPlayer _otherPlayerPrefab;
@@ -10,7 +11,6 @@ public class SceneView : MonoBehaviour
     private void OnEnable()
     {
         Debug.Log("SceneView - OnEnable");
-        Game.I.OnGameStart += GameStartHandler;
         Game.I.MsgReciever.SvUserJoined += SvUserJoinedHandler;
         Game.I.MsgReciever.SvUserLeft += SvUserLeftHandler;
         Game.I.MsgReciever.SvMove += SvMoveHandler;
@@ -18,11 +18,17 @@ public class SceneView : MonoBehaviour
         Game.I.MsgReciever.SvRestartGame += SvRestartGameHandler;
         Game.I.MsgReciever.SvRevive += SvReviveHandler;
         Game.I.MsgReciever.SvTurnY += SvTurnYHandler;
+        
+        Game.I.MsgReciever.RecivingStart();
+        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        
+        _actor.Init(Game.I.PioManager.UserId);
     }
 
     private void OnDisable()
     {
-        Game.I.OnGameStart -= GameStartHandler;
         Game.I.MsgReciever.SvUserJoined -= SvUserJoinedHandler;
         Game.I.MsgReciever.SvUserLeft -= SvUserLeftHandler;
         Game.I.MsgReciever.SvMove -= SvMoveHandler;
@@ -30,6 +36,10 @@ public class SceneView : MonoBehaviour
         Game.I.MsgReciever.SvRestartGame -= SvRestartGameHandler;
         Game.I.MsgReciever.SvRevive -= SvReviveHandler;
         Game.I.MsgReciever.SvTurnY -= SvTurnYHandler;
+        Game.I.MsgReciever.RecivingStop();
+        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private void SvTurnYHandler(string turnerId, float angleY)
@@ -73,11 +83,6 @@ public class SceneView : MonoBehaviour
         
     }
 
-    private void GameStartHandler()
-    {
-        _actor.Init(Game.I.PioManager.UserId);
-    }
-
     private void SvUserJoinedHandler(string userId, Vector3 pos, int teamId)
     {
         var newPlayer = Instantiate(_otherPlayerPrefab);
@@ -103,6 +108,15 @@ public class SceneView : MonoBehaviour
         if (movedPlayer != null)
         {
             movedPlayer.Move(newPos);
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Game.I.PioManager.LeaveRoom();
+            SceneManager.LoadScene("MainMenu");
         }
     }
 }

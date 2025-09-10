@@ -8,7 +8,7 @@ public class PioManager
 {
     private const bool IS_DEVELOPMENT_SERVER = false;
     private const string GAME_ID = "dbd-new-qrdesbn2rku1glgjblamhq";
-    public const string DEFAULT_ROOM_TYPE = "Default";
+    public const string DEFAULT_ROOM_TYPE = "UnityMushrooms";
 
     private Client _client;
     private string _userId;
@@ -29,6 +29,7 @@ public class PioManager
     public event Action OnSuccessConnected; 
     public event Action OnJoinRoomSuccess; 
     public event Action OnJoinRoomFailed; 
+    public event Action OnLeaveRoom; 
     
 
     public PioManager(MsgReciever msgReciever, Action onConnectedToServer)
@@ -52,14 +53,12 @@ public class PioManager
     private void OnConnectSuccess(Client client)
     {
         _client = client;
+        _isConnected = true;
         Debug.Log("PIO: OnConnectSuccess Successfully connected to Player.IO");
         if (IS_DEVELOPMENT_SERVER)
             client.Multiplayer.DevelopmentServer = new ServerEndpoint("localhost", 8184);
 
-        client.Multiplayer.CreateJoinRoom("UnityDemoRoom", "UnityMushrooms", true, null,
-            null,
-            JoinedRoomSuccess, JoinedRoomFailed
-        );
+
         OnSuccessConnected?.Invoke();
     }
     
@@ -90,10 +89,23 @@ public class PioManager
 
     public void JoinRoom(RoomInfo roomInfo)
     {
-        _client.Multiplayer.CreateJoinRoom("UnityDemoRoom", "UnityMushrooms", true, null,
+        _client.Multiplayer.CreateJoinRoom(roomInfo.Id, DEFAULT_ROOM_TYPE, true, null,
             null,
             JoinedRoomSuccess, JoinedRoomFailed
         );
-        _client.Multiplayer.JoinRoom(roomInfo.Id,null,JoinedRoomSuccess,JoinedRoomFailed);
+    }
+
+    public void CreateRoom(string serverName)
+    {
+        _client.Multiplayer.CreateJoinRoom(serverName, DEFAULT_ROOM_TYPE, true, null,
+            null, JoinedRoomSuccess, JoinedRoomFailed
+        );
+    }
+
+    public void LeaveRoom()
+    {
+        Debug.Log("PIO: Leave Room");
+        _pioConnection.Disconnect();
+        Debug.Log("PIO: Leave Room 2");
     }
 }

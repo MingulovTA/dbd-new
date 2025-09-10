@@ -30,8 +30,6 @@ public class Actor : MonoBehaviour
     
     private void Awake()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         _plModel = _plModels[0];
         ChangeTeam(0);
     }

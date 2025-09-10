@@ -62,7 +62,7 @@ namespace MushroomsUnity3DExample
 					player.Send("SvUserJoined", pl.ConnectUserId, pl.PosX, pl.PosY, pl.PosZ,pl.TeamId);
 				}
 			}
-			player.Send("SvUserJoined", player.ConnectUserId, player.PosX,player.PosY,player.PosZ,player.TeamId);
+			//player.Send("SvUserJoined", player.ConnectUserId, player.PosX,player.PosY,player.PosZ,player.TeamId);
 			CheckForEndOfRound();
 		}
 

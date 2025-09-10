@@ -16,6 +16,7 @@ public class ServerListSceneView : MonoBehaviour
     {
         _serverLineViewPrefab.gameObject.SetActive(false);
         _btnRefresh.interactable = false;
+        _btnRefresh.onClick.RemoveListener(Refresh);
         Game.I.PioManager.OnSuccessConnected += Refresh;
         
         if (Game.I.PioManager.IsConnected)

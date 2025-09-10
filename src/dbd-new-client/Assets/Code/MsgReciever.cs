@@ -6,6 +6,8 @@ using UnityEngine;
 public class MsgReciever
 {
     private List<Message> _msgList = new List<Message>(); //  Messsage queue implementation
+
+    private bool _isRecivingAvailiable;
     public event Action<string, Vector3, int> SvUserJoined;
     public event Action<string> SvUserLeft;
     public event Action<string,Vector3> SvMove;
@@ -13,7 +15,7 @@ public class MsgReciever
     public event Action<string,string> SvKill;
     public event Action SvRestartGame;
     public event Action<string> SvRevive;
-
+    
     public void Recieve(Message msg)
     {
         _msgList.Add(msg);
@@ -21,9 +23,10 @@ public class MsgReciever
 
     public void Tick()
     {
+	    if (!_isRecivingAvailiable) return;
         foreach (Message m in _msgList) 
 		{
-			Debug.Log(m.Type);
+			Debug.Log("PIO: " + m.Type);
 			switch (m.Type) {
 				case "SvUserJoined":
 					SvUserJoined?.Invoke(m.GetString(0), new Vector3(m.GetFloat(1),m.GetFloat(2),m.GetFloat(3)),m.GetInteger(4));
@@ -50,5 +53,15 @@ public class MsgReciever
 		}
 
         _msgList.Clear();
+    }
+
+    public void RecivingStop()
+    {
+	    _isRecivingAvailiable = false;
+    }
+
+    public void RecivingStart()
+    {
+	    _isRecivingAvailiable = true;
     }
 }
