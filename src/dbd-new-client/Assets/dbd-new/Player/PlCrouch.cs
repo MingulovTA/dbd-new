@@ -21,7 +21,7 @@ namespace App.Player
         {
             get
             {
-                return _characterController.isGrounded;
+                    return _characterController.isGrounded;
                 Vector3 castOrigin = transform.position;
                 castOrigin.y += _characterController.radius;
                 var isHit = Physics.SphereCast(castOrigin, _characterController.radius-0.01f, Vector3.down, out _hit, 0.02f);
