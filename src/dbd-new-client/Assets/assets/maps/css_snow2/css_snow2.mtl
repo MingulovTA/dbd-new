@@ -1,0 +1,92 @@
+# infwood2
+newmtl texture_0
+map_Kd css_snow2_texture_0.tga
+
+# concretewall04b
+newmtl texture_1
+map_Kd css_snow2_texture_1.tga
+
+# concretewall04c
+newmtl texture_2
+map_Kd css_snow2_texture_2.tga
+
+# roadwinter
+newmtl texture_3
+map_Kd css_snow2_texture_3.tga
+
+# snow
+newmtl texture_4
+map_Kd css_snow2_texture_4.tga
+
+# train_cement_s1
+newmtl texture_5
+map_Kd css_snow2_texture_5.tga
+
+# infwood
+newmtl texture_6
+map_Kd css_snow2_texture_6.tga
+
+# brickwall08b_wi
+newmtl texture_7
+map_Kd css_snow2_texture_7.tga
+
+# black
+newmtl texture_8
+map_Kd css_snow2_texture_8.tga
+
+# nukroof01
+newmtl texture_9
+map_Kd css_snow2_texture_9.tga
+
+# woodwallwind
+newmtl texture_10
+map_Kd css_snow2_texture_10.tga
+
+# woodwalldoor
+newmtl texture_11
+map_Kd css_snow2_texture_11.tga
+
+# woobeamt01
+newmtl texture_12
+map_Kd css_snow2_texture_12.tga
+
+# wdcrate2_win
+newmtl texture_13
+map_Kd css_snow2_texture_13.tga
+
+# wdcrate4_win
+newmtl texture_14
+map_Kd css_snow2_texture_14.tga
+
+# bytatueugen
+newmtl texture_15
+map_Kd css_snow2_texture_15.tga
+
+# c1a0_w2
+newmtl texture_16
+map_Kd css_snow2_texture_16.tga
+
+# bannergirlz
+newmtl texture_17
+map_Kd css_snow2_texture_17.tga
+
+# whitewood
+newmtl texture_18
+map_Kd css_snow2_texture_18.tga
+
+# {invisible
+newmtl texture_19
+map_Kd css_snow2_texture_19.tga
+
+# steel
+newmtl texture_20
+map_Kd css_snow2_texture_20.tga
+
+# +0~fifties_lgt2
+newmtl texture_21
+map_Kd css_snow2_texture_21.tga
+
+# ~light3f
+newmtl texture_22
+map_Kd css_snow2_texture_22.tga
+

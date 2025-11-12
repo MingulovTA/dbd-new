@@ -20,7 +20,7 @@ public class PioManager
 
     public bool IsConnected => _isConnected;
 
-    public Connection PioConnection => _pioConnection;
+    //public Connection PioConnection => _pioConnection;
 
     public Client Client => _client;
 
@@ -107,5 +107,11 @@ public class PioManager
         Debug.Log("PIO: Leave Room");
         _pioConnection.Disconnect();
         Debug.Log("PIO: Leave Room 2");
+    }
+    
+    public void Send(string type, params object[] parameters)
+    {
+        Debug.Log($"ClSend: {type}");
+        _pioConnection.Send(type,parameters);
     }
 }

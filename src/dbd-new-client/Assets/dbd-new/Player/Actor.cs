@@ -32,13 +32,20 @@ public class Actor : MonoBehaviour
     {
         _plModel = _plModels[0];
         ChangeTeam(0);
+        
     }
+    
 
     public void Init(string userId)
     {
         _userId = userId;
         _connected = true;
+        var p = _transform.position;
+        Game.I.PioManager.Send("SvUserJoined", Game.I.PioManager.UserId, p.x, p.y, p.z, 0);
     }
+    
+    //case "ClUserJoined":
+    //SvUserJoined?.Invoke(m.GetString(0), new Vector3(m.GetFloat(1),m.GetFloat(2),m.GetFloat(3)),m.GetInteger(4));
 
     private void OnValidate()
     {
@@ -78,13 +85,13 @@ public class Actor : MonoBehaviour
             if (op.CurrentTeamId == 0 && _teamId == 1)
             {
                 Debug.Log("Стукаем op");
-                Game.I.PioManager.PioConnection.Send("ClKill", op.UserId);
+                Game.I.PioManager.Send("ClKill", op.UserId);
                 op.Kill();
             }
 
             if (op.CurrentTeamId == 1 && _teamId == 0)
             {
-                Game.I.PioManager.PioConnection.Send("ClKilledBy",op.UserId);
+                Game.I.PioManager.Send("ClKilledBy",op.UserId);
                 Debug.Log("Стукаем себя");
                 Kill();
             }
@@ -125,7 +132,7 @@ public class Actor : MonoBehaviour
 
     private void SendAngle()
     {
-        Game.I.PioManager.PioConnection.Send("ClTurnY", transform.eulerAngles.y);
+        Game.I.PioManager.Send("SvTurnY", Game.I.PioManager.UserId, transform.eulerAngles.y);
     }
 
     private void TryToAnimView()
@@ -160,9 +167,8 @@ public class Actor : MonoBehaviour
         {
             _isMoving = true;
             Vector3 delta = (transform.position-_lastPos)*1/Time.deltaTime*10;
-            Debug.Log(delta);
             Vector3 newPos = transform.position + delta;
-            Game.I.PioManager.PioConnection.Send("ClMove", newPos.x, newPos.y, newPos.z);
+            Game.I.PioManager.Send("SvMove", Game.I.PioManager.UserId, newPos.x, newPos.y, newPos.z);
         }
     }
     
@@ -178,7 +184,7 @@ public class Actor : MonoBehaviour
     private void SendNewPos()
     {
         var p = _transform.position;
-        Game.I.PioManager.PioConnection.Send("ClMove", p.x, p.y, p.z);
+        Game.I.PioManager.Send("SvMove", Game.I.PioManager.UserId, p.x, p.y, p.z);
     }
     
 
@@ -186,12 +192,12 @@ public class Actor : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            Game.I.PioManager.PioConnection.Send("ClRevive",Game.I.PioManager.UserId);
+            Game.I.PioManager.Send("ClRevive",Game.I.PioManager.UserId);
         }
         
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            Game.I.PioManager.PioConnection.Send("ClKill", Game.I.PioManager.UserId);
+            Game.I.PioManager.Send("ClKill", Game.I.PioManager.UserId);
         }
     }
 }

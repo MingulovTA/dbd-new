@@ -18,6 +18,7 @@ public class MsgReciever
     
     public void Recieve(Message msg)
     {
+	    Debug.Log($"Cmd: {msg.Type}");
         _msgList.Add(msg);
     }
 

@@ -26,12 +26,23 @@ public class OtherPlayer : MonoBehaviour
     public void Init(string userId)
     {
         _userId = userId;
+        _targetMovePoint = transform.position;
     }
 
     public void Move(Vector3 point)
     {
-        _navMeshAgent.SetDestination(point);
+        Debug.Log("Other player Move");
+        //_navMeshAgent.SetDestination(point);
+        SetDestination(point);
     }
+
+    private Vector3 _targetMovePoint;
+
+    private void SetDestination(Vector3 targetMovePoint)
+    {
+        _targetMovePoint = targetMovePoint;
+    }
+    
 
     public void ChangeTeam(int teamId)
     {
@@ -51,8 +62,7 @@ public class OtherPlayer : MonoBehaviour
             _plModel.CrossFade("Idle",.25f);
         _lastPos = transform.position;
 
-        //_plModel.transform.eulerAngles =
-        //    Vector3.MoveTowards(_plModel.transform.eulerAngles, _targetAngle, Time.deltaTime*100);
+        transform.position = Vector3.MoveTowards(transform.position, _targetMovePoint, Time.deltaTime * 5);
     }
 
     public void Revive()

@@ -4,38 +4,19 @@ namespace App.Player
 {
     public class PlCrouch : MonoBehaviour
     {
-        public bool UnCrouchIsAvaliliable => _unCrouchAvailible;
-    
-        private bool _unCrouchAvailible;
+        [SerializeField] private CharacterController _characterController;
 
-        public bool IsCeilDetectedForceCheck()
+        private RaycastHit _hit;
+        public bool IsCeilingDetected()
         {
-            RaycastHit hit;
-            float distanceToObstacle = 0;
-            if (Physics.SphereCast(transform.position, 0.4f, transform.up, out hit, 1))
-            {
-                distanceToObstacle = hit.distance;
-                if (distanceToObstacle > 1)
-                    _unCrouchAvailible = true;
-                else
-                    _unCrouchAvailible = false;
-            }
-            else
-            {
-                _unCrouchAvailible = true;
-            }
-
-            return !_unCrouchAvailible;
-        }
-        private void Update()
-        {
-            IsCeilDetectedForceCheck();
+            Vector3 castOrigin = transform.position;
+            castOrigin.y += _characterController.height - _characterController.radius;
+            return Physics.SphereCast(castOrigin, _characterController.radius, transform.up, out _hit, 0.01f);
         }
 
         public void Enable()
         {
             gameObject.SetActive(true);
-            _unCrouchAvailible = false;
         }
 
         public void Disable()

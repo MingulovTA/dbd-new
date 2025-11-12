@@ -113,7 +113,7 @@ public class GameSceneView : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Tilde))
         {
             Game.I.PioManager.LeaveRoom();
             SceneManager.LoadScene("MainMenu");
