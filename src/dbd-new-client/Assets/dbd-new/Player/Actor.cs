@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using App.Player;
 using UnityEngine;
 
@@ -9,7 +8,6 @@ public class Actor : MonoBehaviour
     [SerializeField] private int _teamId;
     
     [SerializeField] private CharacterController _plChar;
-    [SerializeField] private PlMoveSettings _plMoveSettings;
     [SerializeField] private PlCrouch _plCrouch;
     [SerializeField] private Transform _transform;
     [SerializeField] private List<Animation> _plModels;
@@ -22,7 +20,6 @@ public class Actor : MonoBehaviour
     public string UserId => _userId;
     public CharacterController PlChar => _plChar;
 
-    public PlMoveSettings PlMoveSettings => _plMoveSettings;
 
     public PlCrouch PlCrouch => _plCrouch;
 
@@ -44,14 +41,10 @@ public class Actor : MonoBehaviour
         Game.I.PioManager.Send("SvUserJoined", Game.I.PioManager.UserId, p.x, p.y, p.z, 0);
     }
     
-    //case "ClUserJoined":
-    //SvUserJoined?.Invoke(m.GetString(0), new Vector3(m.GetFloat(1),m.GetFloat(2),m.GetFloat(3)),m.GetInteger(4));
-
     private void OnValidate()
     {
         _transform = transform;
         _plChar = GetComponent<CharacterController>();
-        _plMoveSettings = GetComponent<PlMoveSettings>();
         _plCrouch = GetComponentInChildren<PlCrouch>();
     }
 
