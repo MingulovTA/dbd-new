@@ -20,6 +20,7 @@ namespace App.Player
             Debug.Log("OnCollisionEnter");
             _force = Vector3.down*10;
         }
+        
 
         private void Update()
         {
@@ -141,6 +142,9 @@ namespace App.Player
                 //_force = _controller.velocity;
                 _gravity = Vector3.zero;
             }
+            
+            if (_plCrouch.IsWallDetected())
+                _force = Vector3.zero;
 
             //if (_lastGrnd && !_plCrouch.IsGrounded&&_force.y<=0)
             //    _force.y = 0;
