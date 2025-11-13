@@ -40,8 +40,8 @@ public class Explosion : MonoBehaviour
 
     private void PushPlayer(PlayerMovement pm)
     {
-        Vector3 explosionDirection = pm.transform.position - transform.position;
-        float dist = Vector3.Distance(pm.transform.position, transform.position);
+        Vector3 explosionDirection = pm.Center - transform.position;
+        float dist = Vector3.Distance(pm.Center, transform.position);
 
         float power = 1-(dist / _sphereCollider.radius);
         pm.AddForce(explosionDirection.normalized * explosionForce);

@@ -12,6 +12,8 @@ namespace App.Player
         private float ySpeed = 0f;
         [SerializeField] private Vector3 _gravity = Vector3.zero;
 
+        public Vector3 Center => transform.position + _controller.center;
+
 
         private void OnCollisionEnter(Collision other)
         {
