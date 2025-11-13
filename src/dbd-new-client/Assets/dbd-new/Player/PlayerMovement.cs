@@ -119,8 +119,15 @@ namespace App.Player
         private bool _lastGrnd;
         private void ForceTick()
         {
-            _force = Vector3.MoveTowards(_force, Vector3.zero, Time.deltaTime*10);
+            _force = Vector3.MoveTowards(_force, new Vector3(_force.x,0,_force.z), Time.deltaTime*10);
 
+            if (_plCrouch.IsGrounded)
+                _force = Vector3.MoveTowards(_force, new Vector3(0,_force.y,0), Time.deltaTime*100);
+            /*if (!_lastGrnd && _plCrouch.IsGrounded)
+            {
+                _force.x = 0;
+                _force.z = 0;
+            }*/
             
             if (!_lastGrnd && !_plCrouch.IsGrounded)
             {
