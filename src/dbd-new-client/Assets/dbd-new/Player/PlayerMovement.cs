@@ -98,7 +98,13 @@ namespace App.Player
             {
                 _force.y = 0;
             }
+
+            Vector3 pos = transform.position;
+            
             _controller.Move(velocity * Time.deltaTime);
+            
+            Vector3 correction = transform.position-pos;
+            _force = correction;
         }
 
         [SerializeField] private Vector3 _force;
