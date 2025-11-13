@@ -30,7 +30,7 @@ namespace App.Player
         {
             Vector3 castOrigin = transform.position;
             castOrigin.y += _characterController.height - _characterController.radius;
-            var isHit = Physics.SphereCast(castOrigin, _characterController.radius-0.01f, transform.forward, out _hit, 0.02f);
+            var isHit = Physics.SphereCast(castOrigin, _characterController.radius-0.01f, transform.up, out _hit, 0.02f);
             if (!isHit) return false;
             return !_hit.collider.isTrigger;
         }

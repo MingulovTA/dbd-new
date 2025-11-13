@@ -120,12 +120,7 @@ namespace App.Player
         private void ForceTick()
         {
             _force = Vector3.MoveTowards(_force, Vector3.zero, Time.deltaTime*10);
-            /*if (_plCrouch.IsGrounded)
-                _force = Vector3.MoveTowards(_force, Vector3.down*10, Time.deltaTime*10f);
-            else
-            {
-                _force = Vector3.MoveTowards(_force, new Vector3(_force.x,_force.y>-10?-10:_force.y,_force.z), Time.deltaTime*10f);
-            }*/
+
             
             if (!_lastGrnd && !_plCrouch.IsGrounded)
             {
@@ -142,18 +137,17 @@ namespace App.Player
                 //_force = _controller.velocity;
                 _gravity = Vector3.zero;
             }
-            
+
             if (_plCrouch.IsWallDetected())
-                _force = Vector3.zero;
+            {
+                _force.x = 0;
+                _force.z = 0;
+            }
 
-            //if (_lastGrnd && !_plCrouch.IsGrounded&&_force.y<=0)
-            //    _force.y = 0;
-
-            //if (!_lastGrnd && _plCrouch.IsGrounded)
-            //{
-            //    _force.y = -10;
-           // }
-            
+            if (_force.y > 0 && _plCrouch.IsCeilingDetected())
+            {
+                _force.y = 0;
+            }
             _lastGrnd = _plCrouch.IsGrounded;
         }
     }
