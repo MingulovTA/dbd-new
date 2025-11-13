@@ -24,41 +24,58 @@ namespace App.Player
 
         private void Update()
         {
-            Vector3 cur = transform.position;
-            //cur.y = 0;
-            
             GroundedUpdate();
             ForceTick();
-            
-            var newVel =  (transform.position-cur) / Time.deltaTime;
-            
-            Debug.Log("");
-            Debug.Log("_force = "+_force);
-            Debug.Log("_controller = "+_controller.velocity);
-            Debug.Log("newVel = "+newVel);
-            
-            Debug.Log("d = "+ (Vector3.Distance(new Vector3(_force.x,0,_force.z), newVel)));
-            //_force = newVel;
         }
 
+        private Vector3 _lastFrameInput;
+        [SerializeField] private Vector3 _vel;
         private void GroundedUpdate()
         {
             Vector3 moveDirection = transform.right * Input.GetAxis("Horizontal") +
                                     transform.forward * Input.GetAxis("Vertical");
             if (moveDirection.magnitude > 1f) 
                 moveDirection.Normalize();
-            //moveDirection.y = -10;
+            moveDirection = moveDirection * walkSpeed;
 
-            _controller.Move(moveDirection * walkSpeed * Time.deltaTime);
-            _controller.Move(_gravity*Time.deltaTime);
+            //Calc vel as input
+            _vel -= _lastFrameInput;
+            _vel += moveDirection;
+            _lastFrameInput = moveDirection;
             
-            if (_force.magnitude > 0)
-            {
-                // Толкание применяется в том случае, если оно не равно нулю
-                _controller.Move(_force * Time.deltaTime);
-                //_force = Vector3.zero; // Обнуляем силу после применения
-            }
+            if (Input.GetButton("Jump") && _plCrouch.IsGrounded)
+                _vel += Vector3.up*10f;
 
+            //gravity
+            _vel = Vector3.MoveTowards(_vel, new Vector3(_vel.x,0,_vel.z), Time.deltaTime*10);
+            
+            if (_plCrouch.IsGrounded)
+            {
+                _gravity = Vector3.down*10;
+                _vel.y = 0;
+            }
+            else
+            {
+                
+            }
+            
+            _controller.Move(_vel*Time.deltaTime);
+            return;
+            
+            
+            
+            
+            //moveDirection.y = -10;
+            _force -= _lastFrameInput;
+            _force += moveDirection * walkSpeed * Time.deltaTime;
+            _lastFrameInput = moveDirection * walkSpeed * Time.deltaTime;
+            Vector3 pos = transform.position;
+            _controller.Move(_gravity*Time.deltaTime+_force * Time.deltaTime);
+
+            Vector3 correction = pos-transform.position;
+            //_force = correction;
+            Debug.Log("correction = "+correction.magnitude);
+            Debug.Log("correction = "+correction.magnitude);
             if (Input.GetButton("Jump")&&_plCrouch.IsGrounded)
             {
                 transform.position = new Vector3(transform.position.x,transform.position.y+.1f,transform.position.z);
@@ -129,13 +146,11 @@ namespace App.Player
 
             if (_plCrouch.IsGrounded)
                 _force = Vector3.MoveTowards(_force, new Vector3(0,_force.y,0), Time.deltaTime*100);
-            /*if (!_lastGrnd && _plCrouch.IsGrounded)
-            {
-                _force.x = 0;
-                _force.z = 0;
-            }*/
+
             
-            if (!_lastGrnd && !_plCrouch.IsGrounded)
+            
+            
+            /*if (!_lastGrnd && !_plCrouch.IsGrounded)
             {
                 _gravity += Vector3.down*10*Time.deltaTime;
             }
@@ -149,13 +164,13 @@ namespace App.Player
             {
                 //_force = _controller.velocity;
                 _gravity = Vector3.zero;
-            }
+            }*/
 
-            if (_plCrouch.IsWallDetected())
+            /*if (_plCrouch.IsWallDetected())
             {
                 _force.x = 0;
                 _force.z = 0;
-            }
+            }*/
 
             if (_force.y > 0 && _plCrouch.IsCeilingDetected())
             {
