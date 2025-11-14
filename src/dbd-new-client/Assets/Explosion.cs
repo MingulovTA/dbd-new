@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using App.Player;
@@ -9,6 +10,22 @@ public class Explosion : MonoBehaviour
     [SerializeField] private SphereCollider _sphereCollider;
 
     [SerializeField] private List<PlayerMovement> _players = new List<PlayerMovement>();
+    [SerializeField] private bool _explodeOnStart;
+
+    private IEnumerator Start()
+    {
+        yield return null;
+        if (_explodeOnStart)
+        {
+            yield return null;
+            yield return null;
+            yield return null;
+            yield return null;
+            yield return null;
+            Explode();
+            Destroy(gameObject);
+        }
+    }
 
     private void OnTriggerExit(Collider other)
     {
